@@ -15,6 +15,8 @@ class ParsingError : public std::runtime_error {
     using std::runtime_error::runtime_error;
 };
 
+using SheetArgs = std::function<double(Position)>;
+
 class FormulaAST {
 public:
     explicit FormulaAST(std::unique_ptr<ASTImpl::Expr> root_expr,
@@ -23,7 +25,7 @@ public:
     FormulaAST& operator=(FormulaAST&&) = default;
     ~FormulaAST();
 
-    double Execute(/*добавьте нужные аргументы*/ args) const;
+    double Execute(const SheetArgs& args) const;
     void PrintCells(std::ostream& out) const;
     void Print(std::ostream& out) const;
     void PrintFormula(std::ostream& out) const;

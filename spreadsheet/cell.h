@@ -2,9 +2,8 @@
 
 #include "common.h"
 #include "formula.h"
-
-#include <functional>
 #include <unordered_set>
+#include <optional>
 
 class Sheet;
 
@@ -19,18 +18,21 @@ public:
     Value GetValue() const override;
     std::string GetText() const override;
     std::vector<Position> GetReferencedCells() const override;
-
+    
     bool IsReferenced() const;
 
 private:
+//можете воспользоваться нашей подсказкой, но это необязательно.
     class Impl;
-    class EmptyImpl;
+    class EmptyImpl; 
     class TextImpl;
     class FormulaImpl;
-
-    std::unique_ptr<Impl> impl_;
-
-    // Добавьте поля и методы для связи с таблицей, проверки циклических 
-    // зависимостей, графа зависимостей и т. д.
-
+    
+    bool SearchCircularDependency(const Impl& new_impl) const;
+    void InvalidateCacheRecursive(bool need_swap = false);
+    
+    std::unique_ptr<Impl> impl_; 
+    Sheet& sheet_;
+    std::unordered_set<Cell*> l_nodes_;
+    std::unordered_set<Cell*> r_nodes_;    
 };
